@@ -1,0 +1,2798 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Inventário Almoxarifado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            --green-50: #f0fdf4;
+            --green-100: #dcfce7;
+            --green-200: #bbf7d0;
+            --green-300: #86efac;
+            --green-400: #4ade80;
+            --green-500: #22c55e;
+            --green-600: #16a34a;
+            --green-700: #15803d;
+            --green-800: #166534;
+            --green-900: #14532d;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --red-500: #ef4444;
+            --red-50: #fef2f2;
+            --yellow-500: #eab308;
+            --yellow-50: #fefce8;
+            --blue-500: #3b82f6;
+            --blue-50: #eff6ff;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ========== LOGIN ========== */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--green-600) 0%, var(--green-800) 100%);
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo .icon-circle {
+            width: 72px; height: 72px;
+            background: var(--green-50);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .login-logo .icon-circle .material-icons-round {
+            font-size: 36px;
+            color: var(--green-600);
+        }
+
+        .login-logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .login-logo p {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--gray-800);
+            background: white;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--green-500);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+        }
+
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--green-600);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover { background: var(--green-700); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            background: var(--green-50);
+            color: var(--green-700);
+            border: 1.5px solid var(--green-200);
+        }
+
+        .btn-secondary:hover { background: var(--green-100); }
+
+        .btn-danger {
+            background: var(--red-50);
+            color: var(--red-500);
+            border: 1.5px solid #fecaca;
+        }
+
+        .btn-danger:hover { background: #fee2e2; }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--gray-600);
+            padding: 8px 12px;
+        }
+
+        .btn-ghost:hover { background: var(--gray-100); }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .btn-icon {
+            width: 40px; height: 40px;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        /* ========== APP SHELL ========== */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .app-container.active { display: block; }
+
+        /* Header */
+        .app-header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 36px; height: 36px;
+            background: var(--green-600);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-logo .material-icons-round { font-size: 20px; color: white; }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .header-subtitle {
+            font-size: 11px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--green-50);
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--green-700);
+        }
+
+        .user-avatar {
+            width: 28px; height: 28px;
+            background: var(--green-600);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            font-family: inherit;
+            position: relative;
+        }
+
+        .nav-item .material-icons-round {
+            font-size: 24px;
+            color: var(--gray-400);
+            transition: all 0.2s;
+        }
+
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--gray-400);
+            margin-top: 2px;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active .material-icons-round { color: var(--green-600); }
+        .nav-item.active span { color: var(--green-600); }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 3px;
+            background: var(--green-600);
+            border-radius: 0 0 3px 3px;
+        }
+
+        /* Pages */
+        .page { display: none; padding: 16px; }
+        .page.active { display: block; }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .page-desc {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 20px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-card .stat-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--gray-900);
+        }
+
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        /* Inventory Items */
+        .inventory-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .inventory-item:last-child { border-bottom: none; }
+
+        .item-code {
+            background: var(--green-50);
+            color: var(--green-700);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            min-width: 56px;
+            text-align: center;
+        }
+
+        .item-info { flex: 1; }
+
+        .item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .item-group {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .item-qty-input {
+            width: 80px;
+            padding: 8px 10px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .item-qty-input:focus {
+            border-color: var(--green-500);
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
+        }
+
+        .item-unit {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-weight: 500;
+            min-width: 30px;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 10px 12px;
+            background: var(--gray-50);
+            color: var(--gray-600);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .data-table tr:hover td { background: var(--gray-50); }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-green { background: var(--green-100); color: var(--green-700); }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+        .badge-yellow { background: #fef3c7; color: #d97706; }
+        .badge-blue { background: #dbeafe; color: #2563eb; }
+        .badge-gray { background: var(--gray-100); color: var(--gray-600); }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-handle {
+            width: 36px;
+            height: 4px;
+            background: var(--gray-300);
+            border-radius: 2px;
+            margin: 0 auto 16px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        /* Tabs inside pages */
+        .sub-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+
+        .sub-tab {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-500);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .sub-tab.active {
+            background: white;
+            color: var(--green-700);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Inventory Start */
+        .start-hero {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .start-hero .hero-icon {
+            width: 80px; height: 80px;
+            background: var(--green-50);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .start-hero .hero-icon .material-icons-round {
+            font-size: 40px;
+            color: var(--green-600);
+        }
+
+        .start-hero h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .start-hero p {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 24px;
+        }
+
+        /* Counting progress */
+        .counting-header {
+            background: linear-gradient(135deg, var(--green-600), var(--green-700));
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .counting-header .ch-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .counting-header .ch-label {
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        .counting-header .ch-count {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        /* Search */
+        .search-box {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .search-box .material-icons-round {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 14px 12px 44px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            background: white;
+        }
+
+        .search-box input:focus {
+            border-color: var(--green-500);
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
+        }
+
+        /* Estoque list */
+        .stock-item {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stock-item .stock-left {
+            flex: 1;
+        }
+
+        .stock-item .stock-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stock-item .stock-meta {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .stock-item .stock-qty {
+            text-align: right;
+        }
+
+        .stock-item .stock-qty-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--gray-900);
+        }
+
+        .stock-item .stock-qty-unit {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .stock-item .stock-variation {
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .variation-up { color: var(--green-600); }
+        .variation-down { color: var(--red-500); }
+        .variation-neutral { color: var(--gray-400); }
+
+        /* Chart container */
+        .chart-container {
+            padding: 16px 0;
+            min-height: 200px;
+        }
+
+        /* History item */
+        .history-item {
+            padding: 14px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .history-item .hi-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .history-item .hi-date {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .history-item .hi-user {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .history-item .hi-division {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .history-item .hi-items {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .history-item .hi-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gray-900);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 300;
+            box-shadow: var(--shadow-lg);
+            animation: toastIn 0.3s ease;
+            display: none;
+        }
+
+        .toast.show { display: block; }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Confirm dialog */
+        .confirm-dialog {
+            text-align: center;
+        }
+
+        .confirm-dialog .confirm-icon {
+            width: 64px; height: 64px;
+            background: var(--green-50);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .confirm-dialog .confirm-icon .material-icons-round {
+            font-size: 32px;
+            color: var(--green-600);
+        }
+
+        .confirm-dialog h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .confirm-dialog p {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 24px;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .confirm-actions .btn { flex: 1; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-state .material-icons-round {
+            font-size: 48px;
+            color: var(--gray-300);
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: var(--gray-400);
+            font-size: 14px;
+        }
+
+        /* Fab */
+        .fab {
+            position: fixed;
+            right: 20px;
+            bottom: 90px;
+            width: 56px;
+            height: 56px;
+            background: var(--green-600);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            z-index: 50;
+            transition: all 0.2s;
+        }
+
+        .fab:hover { background: var(--green-700); transform: scale(1.05); }
+        .fab .material-icons-round { font-size: 28px; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 2px; }
+
+        /* Rectify highlight */
+        .rectified { border-left: 3px solid var(--yellow-500); }
+
+        /* Responsive Desktop */
+        @media (min-width: 768px) {
+            .app-container { max-width: 480px; margin: 0 auto; }
+            .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+            .fab { right: calc(50% - 220px); }
+            .modal { border-radius: var(--radius-lg); }
+            .modal-overlay { align-items: center; }
+            .toast { bottom: 120px; }
+        }
+
+        @media (min-width: 1024px) {
+            .app-container { max-width: 960px; padding-bottom: 20px; }
+            .bottom-nav {
+                position: fixed;
+                top: 0;
+                bottom: auto;
+                left: 0;
+                right: auto;
+                width: 220px;
+                max-width: 220px;
+                flex-direction: column;
+                transform: none;
+                border: none;
+                border-right: 1px solid var(--gray-200);
+                border-radius: 0;
+                padding: 80px 8px 16px;
+                gap: 4px;
+                height: 100vh;
+            }
+            .nav-item {
+                flex-direction: row;
+                gap: 12px;
+                padding: 12px 16px;
+                border-radius: var(--radius);
+                justify-content: flex-start;
+            }
+            .nav-item span { font-size: 14px; margin-top: 0; }
+            .nav-item.active::before {
+                top: 50%;
+                left: 0;
+                transform: translateY(-50%);
+                width: 3px;
+                height: 24px;
+                border-radius: 0 3px 3px 0;
+            }
+            .app-container { margin-left: 220px; max-width: calc(100% - 220px); padding-bottom: 20px; }
+            .fab { right: 40px; bottom: 40px; }
+        }
+
+        /* Filter pills */
+        .filter-pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 7px 14px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: var(--radius-full);
+            background: white;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .pill:hover { border-color: var(--green-300); color: var(--green-700); }
+
+        .pill.active {
+            background: var(--green-50);
+            border-color: var(--green-500);
+            color: var(--green-700);
+        }
+
+        /* Timeline cards */
+        .timeline-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timeline-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .timeline-chart {
+            margin: 0 -4px;
+        }
+
+        .timeline-dates {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+        }
+
+        .timeline-dates span {
+            font-size: 9px;
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-card">
+        <div class="login-logo">
+            <div class="icon-circle">
+                <span class="material-icons-round">inventory_2</span>
+            </div>
+            <h1>Inventário Almox</h1>
+            <p>Sistema de controle de estoque</p>
+        </div>
+        <div class="form-group">
+            <label>Usuário</label>
+            <select id="loginUser">
+                <option value="">Selecione seu nome</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="loginPassword" placeholder="Digite sua senha">
+        </div>
+        <button class="btn btn-primary" onclick="doLogin()">
+            <span class="material-icons-round" style="font-size:20px">login</span>
+            Entrar
+        </button>
+    </div>
+</div>
+
+<!-- ==================== APP ==================== -->
+<div id="appContainer" class="app-container">
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="header-logo">
+                <span class="material-icons-round">inventory_2</span>
+            </div>
+            <div>
+                <div class="header-title">Inventário Almox</div>
+                <div class="header-subtitle" id="headerDivision">Divisão Bataguassu</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-badge">
+                <div class="user-avatar" id="userAvatar">JC</div>
+                <span id="userName">João</span>
+            </div>
+            <button class="btn btn-icon btn-ghost" onclick="doLogout()" title="Sair">
+                <span class="material-icons-round" style="font-size:20px">logout</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ====== PAGE: INVENTÁRIO ====== -->
+    <div id="pageInventory" class="page active">
+        <!-- State: Not started -->
+        <div id="inventoryStart">
+            <h1 class="page-title">Inventário Diário</h1>
+            <p class="page-desc">Registre a contagem de hoje</p>
+            <div class="card">
+                <div class="start-hero">
+                    <div class="hero-icon">
+                        <span class="material-icons-round">assignment</span>
+                    </div>
+                    <h2>Iniciar Contagem</h2>
+                    <p>Selecione a data e comece a contagem do inventário do almoxarifado.</p>
+                    <div class="form-group" style="max-width:280px;margin:0 auto 16px;text-align:left">
+                        <label>Data do Inventário</label>
+                        <input type="text" id="inventoryDate" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" style="text-align:center" oninput="maskDate(this)">
+                    </div>
+                    <button class="btn btn-primary" onclick="startCounting()" style="max-width:280px;margin:0 auto;">
+                        <span class="material-icons-round" style="font-size:20px">play_arrow</span>
+                        Iniciar Inventário
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recent counts -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Últimas Contagens</span>
+                </div>
+                <div id="recentCountsList"></div>
+            </div>
+        </div>
+
+        <!-- State: Counting -->
+        <div id="inventoryCounting" class="hidden">
+            <div class="counting-header">
+                <div class="ch-top">
+                    <div>
+                        <div class="ch-label">Contagem em andamento</div>
+                        <div style="font-size:14px;font-weight:600;margin-top:2px" id="countingDate"></div>
+                    </div>
+                    <div style="text-align:right">
+                        <div class="ch-label">Preenchidos</div>
+                        <div class="ch-count"><span id="filledCount">0</span>/<span id="totalCount">0</span></div>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+                </div>
+            </div>
+
+            <div class="search-box">
+                <span class="material-icons-round">search</span>
+                <input type="text" id="searchMaterial" placeholder="Buscar material..." oninput="filterMaterials()">
+            </div>
+
+            <div id="countingList"></div>
+
+            <div style="padding:16px 0">
+                <button class="btn btn-primary" onclick="confirmRegistration()" style="width:100%">
+                    <span class="material-icons-round" style="font-size:20px">check_circle</span>
+                    Registrar Contagem
+                </button>
+                <button class="btn btn-ghost" onclick="cancelCounting()" style="width:100%;margin-top:8px;color:var(--red-500)">
+                    Cancelar Contagem
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== PAGE: CADASTROS ====== -->
+    <div id="pageCadastros" class="page">
+        <h1 class="page-title">Cadastros</h1>
+        <p class="page-desc">Gerencie materiais e pessoas</p>
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchSubTab('materials', this)">Materiais</button>
+            <button class="sub-tab" onclick="switchSubTab('people', this)">Pessoas</button>
+        </div>
+
+        <!-- Materials -->
+        <div id="subMaterials">
+            <div class="search-box">
+                <span class="material-icons-round">search</span>
+                <input type="text" id="searchCadMaterial" placeholder="Buscar material..." oninput="filterCadMaterials()">
+            </div>
+            <div id="materialsList"></div>
+        </div>
+
+        <!-- People -->
+        <div id="subPeople" class="hidden">
+            <div id="peopleList"></div>
+        </div>
+    </div>
+
+    <!-- ====== PAGE: ESTOQUE E CONSUMO ====== -->
+    <div id="pageEstoque" class="page">
+        <h1 class="page-title">Estoque e Consumo</h1>
+        <p class="page-desc">Visão atual e histórico</p>
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchStockTab('current', this)">Estoque Atual</button>
+            <button class="sub-tab" onclick="switchStockTab('history', this)">Histórico</button>
+            <button class="sub-tab" onclick="switchStockTab('records', this)">Registros</button>
+        </div>
+
+        <div id="stockCurrent">
+            <!-- Division filter pills -->
+            <div class="filter-pills" id="stockDivisionFilter">
+                <button class="pill active" onclick="setStockDivision('total', this)">
+                    <span class="material-icons-round" style="font-size:16px">public</span> Total
+                </button>
+                <button class="pill" onclick="setStockDivision('Divisão Bataguassu', this)">
+                    <span class="material-icons-round" style="font-size:16px">location_on</span> Bataguassu
+                </button>
+                <button class="pill" onclick="setStockDivision('Divisão Água Clara', this)">
+                    <span class="material-icons-round" style="font-size:16px">location_on</span> Água Clara
+                </button>
+            </div>
+            <div class="search-box">
+                <span class="material-icons-round">search</span>
+                <input type="text" id="searchStock" placeholder="Buscar no estoque..." oninput="filterStock()">
+            </div>
+            <div id="stockList"></div>
+        </div>
+
+        <div id="stockHistory" class="hidden">
+            <div id="historyList"></div>
+        </div>
+
+        <div id="stockRecords" class="hidden">
+            <div id="recordsList"></div>
+        </div>
+    </div>
+
+    <!-- ====== PAGE: DASHBOARD ====== -->
+    <div id="pageDashboard" class="page">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-desc">Visão geral do almoxarifado</p>
+
+        <!-- Dashboard Filters -->
+        <div class="card" style="padding:14px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <span class="material-icons-round" style="font-size:18px;color:var(--green-600)">tune</span>
+                <span style="font-size:13px;font-weight:700">Filtros</span>
+            </div>
+            <div class="filter-pills" id="dashDivisionFilter">
+                <button class="pill active" onclick="setDashDivision('total', this)">
+                    <span class="material-icons-round" style="font-size:16px">public</span> Total
+                </button>
+                <button class="pill" onclick="setDashDivision('Divisão Bataguassu', this)">
+                    <span class="material-icons-round" style="font-size:16px">location_on</span> Bataguassu
+                </button>
+                <button class="pill" onclick="setDashDivision('Divisão Água Clara', this)">
+                    <span class="material-icons-round" style="font-size:16px">location_on</span> Água Clara
+                </button>
+            </div>
+            <div class="filter-pills" style="margin-top:8px" id="dashGroupFilter">
+                <button class="pill active" onclick="setDashGroup('todos', this)">Todos Grupos</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+                <div class="form-group" style="flex:1;margin:0">
+                    <label style="font-size:11px">De</label>
+                    <input type="text" id="dashDateFrom" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" style="padding:8px 10px;font-size:13px" oninput="maskDate(this)" onchange="renderDashboard()">
+                </div>
+                <div class="form-group" style="flex:1;margin:0">
+                    <label style="font-size:11px">Até</label>
+                    <input type="text" id="dashDateTo" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" style="padding:8px 10px;font-size:13px" oninput="maskDate(this)" onchange="renderDashboard()">
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid" id="dashboardStats"></div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Consumo no Período</span>
+            </div>
+            <div class="chart-container" id="consumptionChart"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Materiais com Maior Consumo</span>
+            </div>
+            <div id="topConsumption"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Contagens por Divisão</span>
+            </div>
+            <div id="divisionStats"></div>
+        </div>
+
+        <!-- Painel Macro de Consumo -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Timeline de Consumo por Material</span>
+            </div>
+            <p style="font-size:12px;color:var(--gray-500);margin-bottom:12px">Evolução de cada insumo ao longo das contagens</p>
+            <div class="search-box" style="margin-bottom:12px">
+                <span class="material-icons-round">search</span>
+                <input type="text" id="searchTimeline" placeholder="Filtrar material..." oninput="renderTimeline()">
+            </div>
+            <div id="timelineContainer"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchPage('inventory', this)">
+            <span class="material-icons-round">assignment</span>
+            <span>Inventário</span>
+        </button>
+        <button class="nav-item" onclick="switchPage('cadastros', this)">
+            <span class="material-icons-round">folder_shared</span>
+            <span>Cadastros</span>
+        </button>
+        <button class="nav-item" onclick="switchPage('estoque', this)">
+            <span class="material-icons-round">warehouse</span>
+            <span>Estoque</span>
+        </button>
+        <button class="nav-item" onclick="switchPage('dashboard', this)">
+            <span class="material-icons-round">dashboard</span>
+            <span>Dashboard</span>
+        </button>
+    </nav>
+
+    <!-- FAB for Cadastros page -->
+    <button class="fab hidden" id="fabAdd" onclick="openAddModal()">
+        <span class="material-icons-round">add</span>
+    </button>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Add Material Modal -->
+<div class="modal-overlay" id="modalMaterial">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="modal-title" id="modalMaterialTitle">Novo Material</div>
+        <input type="hidden" id="editMaterialId">
+        <div class="form-group">
+            <label>Código</label>
+            <input type="text" id="matCodigo" placeholder="Ex: MAT001">
+        </div>
+        <div class="form-group">
+            <label>Nome</label>
+            <input type="text" id="matNome" placeholder="Nome do material">
+        </div>
+        <div class="form-group">
+            <label>Grupo</label>
+            <select id="matGrupo">
+                <option value="">Selecione o grupo</option>
+                <option value="Limpeza">Limpeza</option>
+                <option value="Escritório">Escritório</option>
+                <option value="Elétrica">Elétrica</option>
+                <option value="Hidráulica">Hidráulica</option>
+                <option value="EPI">EPI</option>
+                <option value="Ferramentas">Ferramentas</option>
+                <option value="Combustível">Combustível</option>
+                <option value="Lubrificantes">Lubrificantes</option>
+                <option value="Outros">Outros</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Unidade de Medida</label>
+            <select id="matUnidade">
+                <option value="UN">UN (Unidade)</option>
+                <option value="PC">PC (Peça)</option>
+                <option value="KG">KG (Quilograma)</option>
+                <option value="L">L (Litro)</option>
+                <option value="M">M (Metro)</option>
+                <option value="CX">CX (Caixa)</option>
+                <option value="PCT">PCT (Pacote)</option>
+                <option value="GL">GL (Galão)</option>
+                <option value="RL">RL (Rolo)</option>
+                <option value="PAR">PAR (Par)</option>
+            </select>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px">
+            <button class="btn btn-secondary" onclick="closeModal('modalMaterial')" style="flex:1">Cancelar</button>
+            <button class="btn btn-primary" onclick="saveMaterial()" style="flex:1">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Person Modal -->
+<div class="modal-overlay" id="modalPerson">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="modal-title" id="modalPersonTitle">Nova Pessoa</div>
+        <input type="hidden" id="editPersonId">
+        <div class="form-group">
+            <label>Nome Completo</label>
+            <input type="text" id="pesNome" placeholder="Nome completo">
+        </div>
+        <div class="form-group">
+            <label>Divisão</label>
+            <select id="pesDivisao">
+                <option value="">Selecione a divisão</option>
+                <option value="Divisão Bataguassu">Divisão Bataguassu</option>
+                <option value="Divisão Água Clara">Divisão Água Clara</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Senha de Acesso</label>
+            <input type="password" id="pesSenha" placeholder="Senha para login">
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px">
+            <button class="btn btn-secondary" onclick="closeModal('modalPerson')" style="flex:1">Cancelar</button>
+            <button class="btn btn-primary" onclick="savePerson()" style="flex:1">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Registration Modal -->
+<div class="modal-overlay" id="modalConfirm">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="confirm-dialog">
+            <div class="confirm-icon">
+                <span class="material-icons-round">check_circle</span>
+            </div>
+            <h3>Registrar Contagem?</h3>
+            <p>Confirme que os dados da contagem estão corretos. Após registrar, os dados serão salvos e o estoque será atualizado.</p>
+            <div class="confirm-actions">
+                <button class="btn btn-secondary" onclick="closeModal('modalConfirm')">Revisar</button>
+                <button class="btn btn-primary" onclick="registerCounting()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- WhatsApp Modal -->
+<div class="modal-overlay" id="modalWhatsapp">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="confirm-dialog">
+            <div class="confirm-icon" style="background:#dcfce7">
+                <span class="material-icons-round" style="color:#16a34a;font-size:36px">send</span>
+            </div>
+            <h3>Enviar via WhatsApp?</h3>
+            <p>Deseja compartilhar o relatório da contagem de hoje via WhatsApp?</p>
+            <div class="confirm-actions">
+                <button class="btn btn-secondary" onclick="closeModal('modalWhatsapp')">Não</button>
+                <button class="btn btn-primary" onclick="sendWhatsApp()">
+                    <span class="material-icons-round" style="font-size:18px">send</span>
+                    Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rectify Modal -->
+<div class="modal-overlay" id="modalRectify">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="modal-title">Retificar Contagem</div>
+        <p style="font-size:13px;color:var(--gray-500);margin-bottom:16px">Corrija as quantidades necessárias. A retificação ficará registrada no histórico.</p>
+        <div class="form-group">
+            <label>Motivo da Retificação</label>
+            <textarea id="rectifyReason" rows="2" placeholder="Descreva o motivo da correção"></textarea>
+        </div>
+        <div id="rectifyItems"></div>
+        <div style="display:flex;gap:12px;margin-top:16px">
+            <button class="btn btn-secondary" onclick="closeModal('modalRectify')" style="flex:1">Cancelar</button>
+            <button class="btn btn-primary" onclick="saveRectification()" style="flex:1">Retificar</button>
+        </div>
+    </div>
+</div>
+
+<!-- View Count Detail Modal -->
+<div class="modal-overlay" id="modalDetail">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="modal-title" id="detailTitle">Detalhes da Contagem</div>
+        <div id="detailContent"></div>
+        <button class="btn btn-secondary" onclick="closeModal('modalDetail')" style="width:100%;margin-top:16px">Fechar</button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ==================== FIREBASE + APP LOGIC ==================== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+// ============================================================
+// FIREBASE CONFIG
+// ============================================================
+const firebaseConfig = {
+    apiKey: "AIzaSyAPJs2OInWZejrHGZmc43KiJ2sS5hQqcDY",
+    authDomain: "almoxarifado-insumos.firebaseapp.com",
+    projectId: "almoxarifado-insumos",
+    storageBucket: "almoxarifado-insumos.firebasestorage.app",
+    messagingSenderId: "112524958029",
+    appId: "1:112524958029:web:fb87d0e391c7d48d96bf04",
+    measurementId: "G-695JWVFLYY"
+};
+
+// Detect if Firebase is configured
+const useFirebase = Boolean(firebaseConfig.apiKey);
+let db = null;
+if (useFirebase) {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+}
+
+// ============================================================
+// LOCAL STORAGE DATABASE (works without Firebase)
+// ============================================================
+const LocalDB = {
+    _get(key) {
+        return JSON.parse(localStorage.getItem('almox_' + key) || '[]');
+    },
+    _set(key, data) {
+        localStorage.setItem('almox_' + key, JSON.stringify(data));
+    },
+    _genId() {
+        return 'id_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+    },
+    getAll(collection) {
+        return this._get(collection);
+    },
+    add(collection, data) {
+        const items = this._get(collection);
+        const id = this._genId();
+        items.push({ id, ...data });
+        this._set(collection, items);
+        return id;
+    },
+    update(collection, id, data) {
+        const items = this._get(collection);
+        const idx = items.findIndex(i => i.id === id);
+        if (idx !== -1) { items[idx] = { ...items[idx], ...data }; this._set(collection, items); }
+    },
+    delete(collection, id) {
+        const items = this._get(collection).filter(i => i.id !== id);
+        this._set(collection, items);
+    },
+    seed() {
+        // Only seed if no people exist
+        if (this._get('people').length === 0) {
+            this.add('people', { nome: 'Admin Sistema', divisao: 'Divisão Bataguassu', senha: '1234' });
+            this.add('people', { nome: 'João Carlos', divisao: 'Divisão Bataguassu', senha: '1234' });
+            this.add('people', { nome: 'Maria Silva', divisao: 'Divisão Água Clara', senha: '1234' });
+        }
+        if (this._get('materials').length === 0) {
+            const mats = [
+                { codigo: 'LMP001', nome: 'Detergente 500ml', grupo: 'Limpeza', unidade: 'UN' },
+                { codigo: 'LMP002', nome: 'Água Sanitária 1L', grupo: 'Limpeza', unidade: 'UN' },
+                { codigo: 'LMP003', nome: 'Desinfetante 2L', grupo: 'Limpeza', unidade: 'UN' },
+                { codigo: 'ESC001', nome: 'Papel A4 Resma', grupo: 'Escritório', unidade: 'PCT' },
+                { codigo: 'ESC002', nome: 'Caneta Esferográfica', grupo: 'Escritório', unidade: 'UN' },
+                { codigo: 'EPI001', nome: 'Luva de Proteção', grupo: 'EPI', unidade: 'PAR' },
+                { codigo: 'EPI002', nome: 'Óculos de Segurança', grupo: 'EPI', unidade: 'UN' },
+                { codigo: 'CMB001', nome: 'Óleo Diesel', grupo: 'Combustível', unidade: 'L' },
+                { codigo: 'FER001', nome: 'Chave de Fenda', grupo: 'Ferramentas', unidade: 'UN' },
+            ];
+            mats.forEach(m => this.add('materials', m));
+        }
+    }
+};
+
+// Seed default data
+LocalDB.seed();
+
+// ============================================================
+// STATE
+// ============================================================
+let currentUser = null;
+let materials = [];
+let people = [];
+let counts = [];
+let currentCounting = {};
+let currentCadTab = 'materials';
+let currentStockTab = 'current';
+let stockDivisionFilter = 'total';
+let dashDivisionFilter = 'total';
+let dashGroupFilter = 'todos';
+
+// ============================================================
+// AUTH
+// ============================================================
+function populateLoginUsers() {
+    if (useFirebase) {
+        db.collection('people').orderBy('nome').onSnapshot(snap => {
+            people = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            updateLoginSelect();
+            renderPeople();
+            restoreSavedSession();
+        });
+    } else {
+        people = LocalDB.getAll('people');
+        updateLoginSelect();
+        renderPeople();
+    }
+}
+
+function updateLoginSelect() {
+    const sel = document.getElementById('loginUser');
+    sel.innerHTML = '<option value="">Selecione seu nome</option>';
+    people.forEach(p => {
+        sel.innerHTML += `<option value="${p.id}">${p.nome} - ${p.divisao}</option>`;
+    });
+}
+
+function doLogin() {
+    const userId = document.getElementById('loginUser').value;
+    const pwd = document.getElementById('loginPassword').value;
+    if (!userId) return showToast('Selecione um usuário');
+    const user = people.find(p => p.id === userId);
+    if (!user) return showToast('Usuário não encontrado');
+    if (user.senha !== pwd) return showToast('Senha incorreta');
+    currentUser = user;
+    localStorage.setItem('loggedUser', JSON.stringify(user));
+    showApp();
+}
+
+function doLogout() {
+    currentUser = null;
+    localStorage.removeItem('loggedUser');
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('appContainer').classList.remove('active');
+}
+
+function showApp() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appContainer').classList.add('active');
+    document.getElementById('userName').textContent = currentUser.nome.split(' ')[0];
+    document.getElementById('userAvatar').textContent = currentUser.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    document.getElementById('headerDivision').textContent = currentUser.divisao;
+    loadData();
+}
+
+function checkSession() {
+    const saved = localStorage.getItem('loggedUser');
+    if (saved) {
+        restoreSavedSession();
+    }
+}
+
+function restoreSavedSession() {
+    if (currentUser) return;
+    const saved = localStorage.getItem('loggedUser');
+    if (!saved) return;
+
+    try {
+        const user = JSON.parse(saved);
+        if (!user?.id) return;
+
+        if (!useFirebase) {
+            people = LocalDB.getAll('people');
+        }
+
+        const found = people.find(p => p.id === user.id);
+        if (found) {
+            currentUser = found;
+            showApp();
+        }
+    } catch (error) {
+        localStorage.removeItem('loggedUser');
+    }
+}
+
+// ============================================================
+// DATA LOADING
+// ============================================================
+function loadData() {
+    if (useFirebase) {
+        db.collection('materials').orderBy('codigo').onSnapshot(snap => {
+            materials = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderMaterials(); renderStockList();
+        });
+        db.collection('counts').orderBy('data', 'desc').onSnapshot(snap => {
+            counts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderRecentCounts(); renderStockList(); renderHistory(); renderRecords(); renderDashboard();
+        });
+    } else {
+        refreshLocalData();
+    }
+}
+
+function refreshLocalData() {
+    materials = LocalDB.getAll('materials');
+    counts = LocalDB.getAll('counts').sort((a,b) => b.data > a.data ? 1 : -1);
+    people = LocalDB.getAll('people');
+    renderMaterials(); renderStockList(); renderRecentCounts();
+    renderHistory(); renderRecords(); renderDashboard(); renderPeople();
+    updateLoginSelect();
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function switchPage(page, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+
+    const fab = document.getElementById('fabAdd');
+
+    switch(page) {
+        case 'inventory':
+            document.getElementById('pageInventory').classList.add('active');
+            fab.classList.add('hidden');
+            break;
+        case 'cadastros':
+            document.getElementById('pageCadastros').classList.add('active');
+            fab.classList.remove('hidden');
+            break;
+        case 'estoque':
+            document.getElementById('pageEstoque').classList.add('active');
+            fab.classList.add('hidden');
+            break;
+        case 'dashboard':
+            document.getElementById('pageDashboard').classList.add('active');
+            fab.classList.add('hidden');
+            renderDashboard();
+            break;
+    }
+}
+
+function switchSubTab(tab, el) {
+    currentCadTab = tab;
+    el.parentElement.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('subMaterials').classList.toggle('hidden', tab !== 'materials');
+    document.getElementById('subPeople').classList.toggle('hidden', tab !== 'people');
+}
+
+function switchStockTab(tab, el) {
+    currentStockTab = tab;
+    el.parentElement.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('stockCurrent').classList.toggle('hidden', tab !== 'current');
+    document.getElementById('stockHistory').classList.toggle('hidden', tab !== 'history');
+    document.getElementById('stockRecords').classList.toggle('hidden', tab !== 'records');
+}
+
+function setStockDivision(div, el) {
+    stockDivisionFilter = div;
+    el.parentElement.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    renderStockList();
+}
+
+function setDashDivision(div, el) {
+    dashDivisionFilter = div;
+    el.parentElement.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    renderDashboard();
+}
+
+function setDashGroup(group, el) {
+    dashGroupFilter = group;
+    el.parentElement.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    renderDashboard();
+}
+
+function getFilteredCounts(divFilter, dateFrom, dateTo) {
+    let filtered = counts;
+    if (divFilter && divFilter !== 'total') {
+        filtered = filtered.filter(c => c.divisao === divFilter);
+    }
+    if (dateFrom) filtered = filtered.filter(c => c.data >= dateFrom);
+    if (dateTo) filtered = filtered.filter(c => c.data <= dateTo);
+    return filtered;
+}
+
+function buildGroupPills() {
+    const groups = [...new Set(materials.map(m => m.grupo))].sort();
+    const el = document.getElementById('dashGroupFilter');
+    el.innerHTML = `<button class="pill ${dashGroupFilter === 'todos' ? 'active' : ''}" onclick="setDashGroup('todos', this)">Todos</button>`;
+    groups.forEach(g => {
+        el.innerHTML += `<button class="pill ${dashGroupFilter === g ? 'active' : ''}" onclick="setDashGroup('${g}', this)">${g}</button>`;
+    });
+}
+
+// ============================================================
+// MATERIALS CRUD
+// ============================================================
+function renderMaterials() {
+    const search = (document.getElementById('searchCadMaterial')?.value || '').toLowerCase();
+    const filtered = materials.filter(m =>
+        m.nome.toLowerCase().includes(search) ||
+        m.codigo.toLowerCase().includes(search) ||
+        m.grupo.toLowerCase().includes(search)
+    );
+    const el = document.getElementById('materialsList');
+    if (!filtered.length) {
+        el.innerHTML = `<div class="empty-state"><span class="material-icons-round">inventory_2</span><p>Nenhum material cadastrado</p></div>`;
+        return;
+    }
+    el.innerHTML = filtered.map(m => `
+        <div class="stock-item">
+            <div style="display:flex;align-items:center;gap:12px;flex:1">
+                <div class="item-code">${m.codigo}</div>
+                <div>
+                    <div class="stock-name">${m.nome}</div>
+                    <div class="stock-meta">${m.grupo} · ${m.unidade || 'UN'}</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:4px">
+                <button class="btn btn-icon btn-ghost" onclick="editMaterial('${m.id}')">
+                    <span class="material-icons-round" style="font-size:18px">edit</span>
+                </button>
+                <button class="btn btn-icon btn-ghost" onclick="deleteMaterial('${m.id}')" style="color:var(--red-500)">
+                    <span class="material-icons-round" style="font-size:18px">delete</span>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterCadMaterials() { renderMaterials(); }
+
+function openAddModal() {
+    if (currentCadTab === 'materials') {
+        document.getElementById('modalMaterialTitle').textContent = 'Novo Material';
+        document.getElementById('editMaterialId').value = '';
+        document.getElementById('matCodigo').value = '';
+        document.getElementById('matNome').value = '';
+        document.getElementById('matGrupo').value = '';
+        document.getElementById('matUnidade').value = 'UN';
+        openModal('modalMaterial');
+    } else {
+        document.getElementById('modalPersonTitle').textContent = 'Nova Pessoa';
+        document.getElementById('editPersonId').value = '';
+        document.getElementById('pesNome').value = '';
+        document.getElementById('pesDivisao').value = '';
+        document.getElementById('pesSenha').value = '';
+        openModal('modalPerson');
+    }
+}
+
+function editMaterial(id) {
+    const m = materials.find(x => x.id === id);
+    if (!m) return;
+    document.getElementById('modalMaterialTitle').textContent = 'Editar Material';
+    document.getElementById('editMaterialId').value = id;
+    document.getElementById('matCodigo').value = m.codigo;
+    document.getElementById('matNome').value = m.nome;
+    document.getElementById('matGrupo').value = m.grupo;
+    document.getElementById('matUnidade').value = m.unidade || 'UN';
+    openModal('modalMaterial');
+}
+
+async function saveMaterial() {
+    const id = document.getElementById('editMaterialId').value;
+    const data = {
+        codigo: document.getElementById('matCodigo').value.trim(),
+        nome: document.getElementById('matNome').value.trim(),
+        grupo: document.getElementById('matGrupo').value,
+        unidade: document.getElementById('matUnidade').value
+    };
+    if (!data.codigo || !data.nome || !data.grupo) return showToast('Preencha todos os campos');
+    try {
+        if (useFirebase) {
+            if (id) { await db.collection('materials').doc(id).update(data); }
+            else { await db.collection('materials').add(data); }
+        } else {
+            if (id) { LocalDB.update('materials', id, data); }
+            else { LocalDB.add('materials', data); }
+            refreshLocalData();
+        }
+        showToast(id ? 'Material atualizado!' : 'Material cadastrado!');
+        closeModal('modalMaterial');
+    } catch(e) {
+        showToast('Erro ao salvar: ' + e.message);
+    }
+}
+
+async function deleteMaterial(id) {
+    if (!confirm('Deseja excluir este material?')) return;
+    try {
+        if (useFirebase) { await db.collection('materials').doc(id).delete(); }
+        else { LocalDB.delete('materials', id); refreshLocalData(); }
+        showToast('Material excluído');
+    } catch(e) {
+        showToast('Erro: ' + e.message);
+    }
+}
+
+// ============================================================
+// PEOPLE CRUD
+// ============================================================
+function renderPeople() {
+    const el = document.getElementById('peopleList');
+    if (!el) return;
+    if (!people.length) {
+        el.innerHTML = `<div class="empty-state"><span class="material-icons-round">people</span><p>Nenhuma pessoa cadastrada</p></div>`;
+        return;
+    }
+    el.innerHTML = people.map(p => `
+        <div class="stock-item">
+            <div style="display:flex;align-items:center;gap:12px;flex:1">
+                <div class="user-avatar" style="width:40px;height:40px;font-size:14px">${p.nome.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div>
+                <div>
+                    <div class="stock-name">${p.nome}</div>
+                    <div class="stock-meta">${p.divisao}</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:4px">
+                <button class="btn btn-icon btn-ghost" onclick="editPerson('${p.id}')">
+                    <span class="material-icons-round" style="font-size:18px">edit</span>
+                </button>
+                <button class="btn btn-icon btn-ghost" onclick="deletePerson('${p.id}')" style="color:var(--red-500)">
+                    <span class="material-icons-round" style="font-size:18px">delete</span>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function editPerson(id) {
+    const p = people.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('modalPersonTitle').textContent = 'Editar Pessoa';
+    document.getElementById('editPersonId').value = id;
+    document.getElementById('pesNome').value = p.nome;
+    document.getElementById('pesDivisao').value = p.divisao;
+    document.getElementById('pesSenha').value = p.senha || '';
+    openModal('modalPerson');
+}
+
+async function savePerson() {
+    const id = document.getElementById('editPersonId').value;
+    const data = {
+        nome: document.getElementById('pesNome').value.trim(),
+        divisao: document.getElementById('pesDivisao').value,
+        senha: document.getElementById('pesSenha').value
+    };
+    if (!data.nome || !data.divisao || !data.senha) return showToast('Preencha todos os campos');
+    try {
+        if (useFirebase) {
+            if (id) { await db.collection('people').doc(id).update(data); }
+            else { await db.collection('people').add(data); }
+        } else {
+            if (id) { LocalDB.update('people', id, data); }
+            else { LocalDB.add('people', data); }
+            refreshLocalData();
+        }
+        showToast(id ? 'Pessoa atualizada!' : 'Pessoa cadastrada!');
+        closeModal('modalPerson');
+    } catch(e) {
+        showToast('Erro: ' + e.message);
+    }
+}
+
+async function deletePerson(id) {
+    if (!confirm('Deseja excluir esta pessoa?')) return;
+    try {
+        if (useFirebase) { await db.collection('people').doc(id).delete(); }
+        else { LocalDB.delete('people', id); refreshLocalData(); }
+        showToast('Pessoa excluída');
+    } catch(e) {
+        showToast('Erro: ' + e.message);
+    }
+}
+
+// ============================================================
+// INVENTORY COUNTING
+// ============================================================
+function startCounting() {
+    if (!materials.length) return showToast('Cadastre materiais primeiro');
+    const dateInput = document.getElementById('inventoryDate');
+    const isoDate = parseDateBR(dateInput.value);
+    if (!isoDate) return showToast('Informe uma data válida (DD/MM/AAAA)');
+    currentCounting = {};
+    materials.forEach(m => { currentCounting[m.id] = ''; });
+
+    const selectedDate = new Date(isoDate + 'T12:00:00');
+    document.getElementById('countingDate').textContent = selectedDate.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+    document.getElementById('totalCount').textContent = materials.length;
+    document.getElementById('filledCount').textContent = '0';
+    document.getElementById('progressBar').style.width = '0%';
+
+    renderCountingList();
+
+    document.getElementById('inventoryStart').classList.add('hidden');
+    document.getElementById('inventoryCounting').classList.remove('hidden');
+}
+
+function renderCountingList() {
+    const search = (document.getElementById('searchMaterial')?.value || '').toLowerCase();
+    const filtered = materials.filter(m =>
+        m.nome.toLowerCase().includes(search) ||
+        m.codigo.toLowerCase().includes(search)
+    );
+    const el = document.getElementById('countingList');
+    el.innerHTML = filtered.map(m => `
+        <div class="inventory-item">
+            <div class="item-code">${m.codigo}</div>
+            <div class="item-info">
+                <div class="item-name">${m.nome}</div>
+                <div class="item-group">${m.grupo}</div>
+            </div>
+            <input type="number" class="item-qty-input" id="qty_${m.id}"
+                   value="${currentCounting[m.id]}"
+                   placeholder="0"
+                   inputmode="decimal"
+                   oninput="updateQty('${m.id}', this.value)">
+            <div class="item-unit">${m.unidade || 'UN'}</div>
+        </div>
+    `).join('');
+}
+
+function updateQty(materialId, value) {
+    currentCounting[materialId] = value;
+    const filled = Object.values(currentCounting).filter(v => v !== '' && v !== undefined).length;
+    document.getElementById('filledCount').textContent = filled;
+    const pct = Math.round((filled / materials.length) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function filterMaterials() { renderCountingList(); }
+
+function cancelCounting() {
+    if (!confirm('Deseja cancelar a contagem? Os dados preenchidos serão perdidos.')) return;
+    document.getElementById('inventoryStart').classList.remove('hidden');
+    document.getElementById('inventoryCounting').classList.add('hidden');
+    currentCounting = {};
+}
+
+function confirmRegistration() {
+    const filled = Object.values(currentCounting).filter(v => v !== '' && v !== undefined).length;
+    if (filled === 0) return showToast('Preencha ao menos um material');
+    openModal('modalConfirm');
+}
+
+async function registerCounting() {
+    closeModal('modalConfirm');
+
+    const items = {};
+    materials.forEach(m => {
+        const val = currentCounting[m.id];
+        if (val !== '' && val !== undefined) {
+            items[m.id] = {
+                codigo: m.codigo,
+                nome: m.nome,
+                grupo: m.grupo,
+                unidade: m.unidade || 'UN',
+                quantidade: parseFloat(val) || 0
+            };
+        }
+    });
+
+    const selectedDateISO = parseDateBR(document.getElementById('inventoryDate').value);
+    const record = {
+        data: selectedDateISO,
+        dataCompleta: new Date().toISOString(),
+        usuario: currentUser.nome,
+        usuarioId: currentUser.id,
+        divisao: currentUser.divisao,
+        items: items,
+        retificado: false,
+        retificacoes: []
+    };
+
+    try {
+        if (useFirebase) {
+            await db.collection('counts').add(record);
+        } else {
+            LocalDB.add('counts', record);
+            refreshLocalData();
+        }
+        showToast('Contagem registrada com sucesso!');
+        document.getElementById('inventoryStart').classList.remove('hidden');
+        document.getElementById('inventoryCounting').classList.add('hidden');
+        currentCounting = {};
+
+        // Ask about WhatsApp
+        setTimeout(() => openModal('modalWhatsapp'), 500);
+    } catch(e) {
+        showToast('Erro ao registrar: ' + e.message);
+    }
+}
+
+// ============================================================
+// WHATSAPP
+// ============================================================
+function sendWhatsApp() {
+    closeModal('modalWhatsapp');
+    const lastCount = counts[0];
+    if (!lastCount) return;
+
+    let msg = `📋 *INVENTÁRIO ALMOXARIFADO*\n`;
+    msg += `📅 ${formatDate(lastCount.data)}\n`;
+    msg += `👤 ${lastCount.usuario}\n`;
+    msg += `🏢 ${lastCount.divisao}\n`;
+    msg += `━━━━━━━━━━━━━━━━━━\n\n`;
+
+    const items = lastCount.items;
+    const groups = {};
+    Object.values(items).forEach(item => {
+        if (!groups[item.grupo]) groups[item.grupo] = [];
+        groups[item.grupo].push(item);
+    });
+
+    Object.keys(groups).sort().forEach(grupo => {
+        msg += `📦 *${grupo}*\n`;
+        groups[grupo].forEach(item => {
+            msg += `  • ${item.codigo} - ${item.nome}: *${item.quantidade} ${item.unidade}*\n`;
+        });
+        msg += `\n`;
+    });
+
+    msg += `━━━━━━━━━━━━━━━━━━\n`;
+    msg += `✅ Total de itens: ${Object.keys(items).length}\n`;
+    msg += `🕐 ${new Date().toLocaleTimeString('pt-BR')}`;
+
+    const encoded = encodeURIComponent(msg);
+    window.open(`https://wa.me/?text=${encoded}`, '_blank');
+}
+
+// ============================================================
+// RECENT COUNTS
+// ============================================================
+function renderRecentCounts() {
+    const el = document.getElementById('recentCountsList');
+    const recent = counts.slice(0, 5);
+    if (!recent.length) {
+        el.innerHTML = `<div class="empty-state"><span class="material-icons-round">history</span><p>Nenhuma contagem realizada</p></div>`;
+        return;
+    }
+    el.innerHTML = recent.map(c => `
+        <div class="inventory-item">
+            <div style="flex:1">
+                <div class="item-name">${formatDate(c.data)}</div>
+                <div class="item-group">${c.usuario} · ${c.divisao}</div>
+            </div>
+            <div>
+                <span class="badge ${c.retificado ? 'badge-yellow' : 'badge-green'}">${c.retificado ? 'Retificado' : 'OK'}</span>
+            </div>
+            <div style="font-size:13px;font-weight:700;min-width:40px;text-align:right">
+                ${Object.keys(c.items).length} itens
+            </div>
+        </div>
+    `).join('');
+}
+
+// ============================================================
+// STOCK & CONSUMPTION
+// ============================================================
+function renderStockList() {
+    const search = (document.getElementById('searchStock')?.value || '').toLowerCase();
+    const el = document.getElementById('stockList');
+
+    // Filter counts by selected division
+    const divCounts = stockDivisionFilter === 'total' ? counts : counts.filter(c => c.divisao === stockDivisionFilter);
+
+    // Get latest count per material
+    const latestStock = {};
+    const previousStock = {};
+
+    // Group counts by date
+    const dateGroups = {};
+    divCounts.forEach(c => {
+        if (!dateGroups[c.data]) dateGroups[c.data] = [];
+        dateGroups[c.data].push(c);
+    });
+
+    const dates = Object.keys(dateGroups).sort().reverse();
+
+    // Latest stock from most recent counts
+    if (dates.length > 0) {
+        dateGroups[dates[0]].forEach(c => {
+            Object.entries(c.items).forEach(([matId, item]) => {
+                if (!latestStock[matId]) {
+                    latestStock[matId] = { ...item };
+                } else if (stockDivisionFilter === 'total') {
+                    latestStock[matId].quantidade += item.quantidade;
+                }
+            });
+        });
+    }
+
+    // Previous stock
+    if (dates.length > 1) {
+        dateGroups[dates[1]].forEach(c => {
+            Object.entries(c.items).forEach(([matId, item]) => {
+                if (!previousStock[matId]) {
+                    previousStock[matId] = { ...item };
+                } else if (stockDivisionFilter === 'total') {
+                    previousStock[matId].quantidade += item.quantidade;
+                }
+            });
+        });
+    }
+
+    const stockItems = materials.map(m => {
+        const current = latestStock[m.id];
+        const previous = previousStock[m.id];
+        const qty = current ? current.quantidade : 0;
+        const prevQty = previous ? previous.quantidade : qty;
+        const diff = qty - prevQty;
+        return { ...m, qty, diff, prevQty };
+    }).filter(m =>
+        m.nome.toLowerCase().includes(search) ||
+        m.codigo.toLowerCase().includes(search)
+    );
+
+    if (!stockItems.length) {
+        el.innerHTML = `<div class="empty-state"><span class="material-icons-round">warehouse</span><p>Nenhum dado de estoque</p></div>`;
+        return;
+    }
+
+    el.innerHTML = stockItems.map(s => {
+        let variationClass = 'variation-neutral';
+        let variationIcon = 'remove';
+        let variationText = '0';
+        if (s.diff > 0) { variationClass = 'variation-up'; variationIcon = 'arrow_upward'; variationText = '+' + s.diff; }
+        else if (s.diff < 0) { variationClass = 'variation-down'; variationIcon = 'arrow_downward'; variationText = s.diff; }
+
+        return `
+        <div class="stock-item">
+            <div style="display:flex;align-items:center;gap:12px;flex:1">
+                <div class="item-code">${s.codigo}</div>
+                <div class="stock-left">
+                    <div class="stock-name">${s.nome}</div>
+                    <div class="stock-meta">${s.grupo}</div>
+                </div>
+            </div>
+            <div class="stock-qty">
+                <div class="stock-qty-value">${s.qty}</div>
+                <div class="stock-qty-unit">${s.unidade || 'UN'}</div>
+                <div class="stock-variation ${variationClass}">
+                    <span class="material-icons-round" style="font-size:14px">${variationIcon}</span>
+                    ${variationText}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function filterStock() { renderStockList(); }
+
+function renderHistory() {
+    const el = document.getElementById('historyList');
+    if (!counts.length) {
+        el.innerHTML = `<div class="empty-state"><span class="material-icons-round">timeline</span><p>Nenhum histórico</p></div>`;
+        return;
+    }
+
+    // Group by date
+    const dateGroups = {};
+    counts.forEach(c => {
+        if (!dateGroups[c.data]) dateGroups[c.data] = [];
+        dateGroups[c.data].push(c);
+    });
+
+    const dates = Object.keys(dateGroups).sort().reverse();
+    let html = '';
+
+    dates.forEach(date => {
+        html += `<div style="font-size:13px;font-weight:700;color:var(--gray-500);margin:16px 0 8px;text-transform:uppercase">${formatDate(date)}</div>`;
+        dateGroups[date].forEach(c => {
+            html += `
+            <div class="history-item ${c.retificado ? 'rectified' : ''}">
+                <div class="hi-top">
+                    <span class="hi-date">${c.usuario}</span>
+                    <span class="badge ${c.retificado ? 'badge-yellow' : 'badge-green'}">${c.retificado ? 'Retificado' : 'Original'}</span>
+                </div>
+                <div class="hi-division">${c.divisao}</div>
+                <div class="hi-items">${Object.keys(c.items).length} materiais contados</div>
+                <div class="hi-actions">
+                    <button class="btn btn-sm btn-secondary" onclick="viewCountDetail('${c.id}')">
+                        <span class="material-icons-round" style="font-size:16px">visibility</span> Ver
+                    </button>
+                </div>
+            </div>`;
+        });
+    });
+
+    el.innerHTML = html;
+}
+
+function renderRecords() {
+    const el = document.getElementById('recordsList');
+    if (!counts.length) {
+        el.innerHTML = `<div class="empty-state"><span class="material-icons-round">receipt_long</span><p>Nenhum registro</p></div>`;
+        return;
+    }
+
+    el.innerHTML = counts.map(c => `
+        <div class="history-item ${c.retificado ? 'rectified' : ''}">
+            <div class="hi-top">
+                <span class="hi-date">${formatDate(c.data)} · ${c.usuario}</span>
+                <span class="badge ${c.retificado ? 'badge-yellow' : 'badge-green'}">${c.retificado ? 'Retificado' : 'OK'}</span>
+            </div>
+            <div class="hi-division">${c.divisao} · ${Object.keys(c.items).length} itens</div>
+            ${c.retificacoes && c.retificacoes.length ? `<div style="font-size:11px;color:var(--yellow-500);margin-top:4px">${c.retificacoes.length} retificação(ões)</div>` : ''}
+            <div class="hi-actions">
+                <button class="btn btn-sm btn-secondary" onclick="viewCountDetail('${c.id}')">
+                    <span class="material-icons-round" style="font-size:16px">visibility</span> Detalhes
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="openRectify('${c.id}')">
+                    <span class="material-icons-round" style="font-size:16px">edit_note</span> Retificar
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ============================================================
+// VIEW DETAIL
+// ============================================================
+function viewCountDetail(countId) {
+    const c = counts.find(x => x.id === countId);
+    if (!c) return;
+
+    document.getElementById('detailTitle').textContent = `Contagem ${formatDate(c.data)}`;
+
+    let html = `
+        <div style="margin-bottom:16px">
+            <div style="font-size:13px;color:var(--gray-500)">Responsável: <strong>${c.usuario}</strong></div>
+            <div style="font-size:13px;color:var(--gray-500)">Divisão: <strong>${c.divisao}</strong></div>
+            <div style="font-size:13px;color:var(--gray-500)">Status: ${c.retificado ? '<span class="badge badge-yellow">Retificado</span>' : '<span class="badge badge-green">Original</span>'}</div>
+        </div>
+        <table class="data-table">
+            <thead><tr><th>Código</th><th>Material</th><th>Qtd</th><th>Un</th></tr></thead>
+            <tbody>`;
+
+    Object.values(c.items).sort((a,b) => a.codigo.localeCompare(b.codigo)).forEach(item => {
+        html += `<tr><td>${item.codigo}</td><td>${item.nome}</td><td style="font-weight:700">${item.quantidade}</td><td>${item.unidade}</td></tr>`;
+    });
+
+    html += `</tbody></table>`;
+
+    if (c.retificacoes && c.retificacoes.length) {
+        html += `<div style="margin-top:16px"><div style="font-size:14px;font-weight:700;margin-bottom:8px">Retificações</div>`;
+        c.retificacoes.forEach((r, i) => {
+            html += `<div style="padding:10px;background:var(--yellow-50);border-radius:8px;margin-bottom:8px;font-size:13px">
+                <strong>Retificação ${i+1}</strong> · ${r.usuario} · ${new Date(r.dataHora).toLocaleString('pt-BR')}<br>
+                <em>Motivo: ${r.motivo}</em><br>`;
+            Object.entries(r.alteracoes).forEach(([matId, alt]) => {
+                html += `${alt.nome}: ${alt.de} → <strong>${alt.para}</strong> ${alt.unidade}<br>`;
+            });
+            html += `</div>`;
+        });
+        html += `</div>`;
+    }
+
+    document.getElementById('detailContent').innerHTML = html;
+    openModal('modalDetail');
+}
+
+// ============================================================
+// RECTIFICATION
+// ============================================================
+let rectifyCountId = null;
+
+function openRectify(countId) {
+    const c = counts.find(x => x.id === countId);
+    if (!c) return;
+    rectifyCountId = countId;
+
+    document.getElementById('rectifyReason').value = '';
+
+    const el = document.getElementById('rectifyItems');
+    el.innerHTML = Object.entries(c.items).sort((a,b) => a[1].codigo.localeCompare(b[1].codigo)).map(([matId, item]) => `
+        <div class="inventory-item">
+            <div class="item-code">${item.codigo}</div>
+            <div class="item-info">
+                <div class="item-name">${item.nome}</div>
+                <div class="item-group">Atual: ${item.quantidade} ${item.unidade}</div>
+            </div>
+            <input type="number" class="item-qty-input" id="rect_${matId}"
+                   value="${item.quantidade}" inputmode="decimal">
+            <div class="item-unit">${item.unidade}</div>
+        </div>
+    `).join('');
+
+    openModal('modalRectify');
+}
+
+async function saveRectification() {
+    const reason = document.getElementById('rectifyReason').value.trim();
+    if (!reason) return showToast('Informe o motivo da retificação');
+
+    const c = counts.find(x => x.id === rectifyCountId);
+    if (!c) return;
+
+    const alteracoes = {};
+    let hasChange = false;
+
+    Object.entries(c.items).forEach(([matId, item]) => {
+        const input = document.getElementById('rect_' + matId);
+        if (!input) return;
+        const newVal = parseFloat(input.value) || 0;
+        if (newVal !== item.quantidade) {
+            alteracoes[matId] = {
+                nome: item.nome,
+                codigo: item.codigo,
+                unidade: item.unidade,
+                de: item.quantidade,
+                para: newVal
+            };
+            hasChange = true;
+        }
+    });
+
+    if (!hasChange) return showToast('Nenhuma alteração detectada');
+
+    const retificacao = {
+        usuario: currentUser.nome,
+        usuarioId: currentUser.id,
+        dataHora: new Date().toISOString(),
+        motivo: reason,
+        alteracoes: alteracoes
+    };
+
+    // Update items with new values
+    const updatedItems = { ...c.items };
+    Object.entries(alteracoes).forEach(([matId, alt]) => {
+        if (updatedItems[matId]) {
+            updatedItems[matId].quantidade = alt.para;
+        }
+    });
+
+    try {
+        if (useFirebase) {
+            await db.collection('counts').doc(rectifyCountId).update({
+                items: updatedItems,
+                retificado: true,
+                retificacoes: firebase.firestore.FieldValue.arrayUnion(retificacao)
+            });
+        } else {
+            const existing = counts.find(x => x.id === rectifyCountId);
+            const retificacoes = existing.retificacoes || [];
+            retificacoes.push(retificacao);
+            LocalDB.update('counts', rectifyCountId, {
+                items: updatedItems,
+                retificado: true,
+                retificacoes: retificacoes
+            });
+            refreshLocalData();
+        }
+        showToast('Retificação registrada!');
+        closeModal('modalRectify');
+    } catch(e) {
+        showToast('Erro: ' + e.message);
+    }
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function getDashFilteredCounts() {
+    const fromStr = document.getElementById('dashDateFrom')?.value || '';
+    const toStr = document.getElementById('dashDateTo')?.value || '';
+    const dateFrom = parseDateBR(fromStr);
+    const dateTo = parseDateBR(toStr);
+    return getFilteredCounts(dashDivisionFilter, dateFrom, dateTo);
+}
+
+function getDashFilteredMaterials() {
+    if (dashGroupFilter === 'todos') return materials;
+    return materials.filter(m => m.grupo === dashGroupFilter);
+}
+
+function renderDashboard() {
+    buildGroupPills();
+    const fc = getDashFilteredCounts();
+    const fm = getDashFilteredMaterials();
+
+    // Stats
+    const today = todayISO();
+    const todayCounts = fc.filter(c => c.data === today).length;
+    const totalItems = fc.reduce((sum, c) => sum + Object.keys(c.items).length, 0);
+    const rectified = fc.filter(c => c.retificado).length;
+
+    document.getElementById('dashboardStats').innerHTML = `
+        <div class="stat-card">
+            <div class="stat-icon" style="background:var(--green-50)">
+                <span class="material-icons-round" style="color:var(--green-600)">inventory_2</span>
+            </div>
+            <div class="stat-value">${fm.length}</div>
+            <div class="stat-label">Materiais</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:var(--blue-50)">
+                <span class="material-icons-round" style="color:var(--blue-500)">assignment_turned_in</span>
+            </div>
+            <div class="stat-value">${fc.length}</div>
+            <div class="stat-label">Contagens</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:var(--yellow-50)">
+                <span class="material-icons-round" style="color:var(--yellow-500)">today</span>
+            </div>
+            <div class="stat-value">${todayCounts}</div>
+            <div class="stat-label">Contagens Hoje</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:${rectified > 0 ? '#fef3c7' : '#f3e8ff'}">
+                <span class="material-icons-round" style="color:${rectified > 0 ? '#d97706' : '#9333ea'}">${rectified > 0 ? 'edit_note' : 'people'}</span>
+            </div>
+            <div class="stat-value">${rectified > 0 ? rectified : people.length}</div>
+            <div class="stat-label">${rectified > 0 ? 'Retificações' : 'Pessoas'}</div>
+        </div>
+    `;
+
+    renderConsumptionChart(fc, fm);
+    renderTopConsumption(fc, fm);
+    renderDivisionStats(fc);
+    renderTimeline();
+}
+
+function renderConsumptionChart(fc, fm) {
+    const el = document.getElementById('consumptionChart');
+    const dates = [...new Set(fc.map(c => c.data))].sort().reverse().slice(0, 10).reverse();
+    const matIds = new Set(fm.map(m => m.id));
+
+    if (dates.length < 2) {
+        el.innerHTML = `<div class="empty-state"><span class="material-icons-round">bar_chart</span><p>Dados insuficientes para gráfico</p></div>`;
+        return;
+    }
+
+    const dailyTotals = dates.map(d => {
+        const dayCounts = fc.filter(c => c.data === d);
+        let total = 0;
+        dayCounts.forEach(c => {
+            Object.entries(c.items).forEach(([matId, item]) => {
+                if (matIds.has(matId)) total += item.quantidade;
+            });
+        });
+        return { date: d, total };
+    });
+
+    const maxVal = Math.max(...dailyTotals.map(d => d.total), 1);
+
+    let html = `<div style="display:flex;align-items:flex-end;gap:6px;height:160px;padding:0 4px">`;
+    dailyTotals.forEach(d => {
+        const height = Math.max((d.total / maxVal) * 140, 4);
+        const dayLabel = formatDate(d.date).substring(0, 5);
+        html += `
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:10px;font-weight:600;color:var(--gray-600)">${Math.round(d.total)}</div>
+            <div style="width:100%;height:${height}px;background:var(--green-500);border-radius:6px 6px 0 0;min-width:16px"></div>
+            <div style="font-size:9px;color:var(--gray-500)">${dayLabel}</div>
+        </div>`;
+    });
+    html += `</div>`;
+    el.innerHTML = html;
+}
+
+function renderTopConsumption(fc, fm) {
+    const el = document.getElementById('topConsumption');
+    const dates = [...new Set(fc.map(c => c.data))].sort().reverse();
+    const matIds = new Set(fm.map(m => m.id));
+
+    if (dates.length < 2) {
+        el.innerHTML = `<div class="empty-state" style="padding:20px"><p style="font-size:13px">Necessário ao menos 2 contagens</p></div>`;
+        return;
+    }
+
+    const consumption = {};
+    fm.forEach(m => { consumption[m.id] = { ...m, consumed: 0 }; });
+
+    for (let i = 0; i < dates.length - 1; i++) {
+        const laterCounts = fc.filter(c => c.data === dates[i]);
+        const earlierCounts = fc.filter(c => c.data === dates[i+1]);
+
+        fm.forEach(m => {
+            let laterQty = 0, earlierQty = 0;
+            laterCounts.forEach(c => { if (c.items[m.id]) laterQty = c.items[m.id].quantidade; });
+            earlierCounts.forEach(c => { if (c.items[m.id]) earlierQty = c.items[m.id].quantidade; });
+            const diff = earlierQty - laterQty;
+            if (diff > 0) consumption[m.id].consumed += diff;
+        });
+    }
+
+    const top = Object.values(consumption).filter(c => c.consumed > 0).sort((a,b) => b.consumed - a.consumed).slice(0, 10);
+
+    if (!top.length) {
+        el.innerHTML = `<div class="empty-state" style="padding:20px"><p style="font-size:13px">Nenhum consumo detectado</p></div>`;
+        return;
+    }
+
+    const maxConsumed = top[0].consumed;
+    el.innerHTML = top.map(item => `
+        <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:13px;font-weight:600">${item.nome}</span>
+                <span style="font-size:13px;font-weight:700;color:var(--red-500)">-${item.consumed} ${item.unidade || 'UN'}</span>
+            </div>
+            <div style="height:8px;background:var(--gray-100);border-radius:4px;overflow:hidden">
+                <div style="height:100%;width:${(item.consumed/maxConsumed)*100}%;background:var(--red-500);border-radius:4px"></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderDivisionStats(fc) {
+    const el = document.getElementById('divisionStats');
+    const divisions = {};
+    fc.forEach(c => {
+        if (!divisions[c.divisao]) divisions[c.divisao] = { count: 0, lastDate: '' };
+        divisions[c.divisao].count++;
+        if (c.data > divisions[c.divisao].lastDate) divisions[c.divisao].lastDate = c.data;
+    });
+
+    if (!Object.keys(divisions).length) {
+        el.innerHTML = `<div class="empty-state" style="padding:20px"><p style="font-size:13px">Nenhum dado disponível</p></div>`;
+        return;
+    }
+
+    el.innerHTML = Object.entries(divisions).map(([div, data]) => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--gray-100)">
+            <div>
+                <div style="font-size:14px;font-weight:600">${div}</div>
+                <div style="font-size:12px;color:var(--gray-500)">Última: ${formatDate(data.lastDate)}</div>
+            </div>
+            <div class="badge badge-green">${data.count} contagens</div>
+        </div>
+    `).join('');
+}
+
+// ============================================================
+// TIMELINE DE CONSUMO
+// ============================================================
+function renderTimeline() {
+    const el = document.getElementById('timelineContainer');
+    const search = (document.getElementById('searchTimeline')?.value || '').toLowerCase();
+    const dates = [...new Set(counts.map(c => c.data))].sort();
+
+    if (dates.length < 1) {
+        el.innerHTML = `<div class="empty-state" style="padding:20px"><span class="material-icons-round">show_chart</span><p>Registre contagens para ver a timeline</p></div>`;
+        return;
+    }
+
+    // Build data: for each material, get qty per date
+    const matData = materials
+        .filter(m => m.nome.toLowerCase().includes(search) || m.codigo.toLowerCase().includes(search))
+        .map(m => {
+            const points = dates.map(d => {
+                let qty = null;
+                counts.filter(c => c.data === d).forEach(c => {
+                    if (c.items[m.id]) qty = c.items[m.id].quantidade;
+                });
+                return { date: d, qty };
+            }).filter(p => p.qty !== null);
+
+            const totalConsumed = points.length >= 2 ? points[0].qty - points[points.length - 1].qty : 0;
+            return { ...m, points, totalConsumed };
+        })
+        .filter(m => m.points.length > 0);
+
+    if (!matData.length) {
+        el.innerHTML = `<div class="empty-state" style="padding:20px"><p style="font-size:13px">Nenhum material encontrado</p></div>`;
+        return;
+    }
+
+    el.innerHTML = matData.map(m => {
+        const pts = m.points;
+        const values = pts.map(p => p.qty);
+        const maxVal = Math.max(...values, 1);
+        const minVal = Math.min(...values, 0);
+        const range = maxVal - minVal || 1;
+        const currentQty = pts[pts.length - 1].qty;
+        const firstQty = pts[0].qty;
+        const diff = currentQty - firstQty;
+        const diffClass = diff > 0 ? 'variation-up' : diff < 0 ? 'variation-down' : 'variation-neutral';
+        const diffIcon = diff > 0 ? 'arrow_upward' : diff < 0 ? 'arrow_downward' : 'remove';
+        const diffText = diff > 0 ? '+' + diff : diff;
+
+        // Build SVG sparkline
+        const svgW = 200, svgH = 40;
+        const step = pts.length > 1 ? svgW / (pts.length - 1) : svgW;
+        const pathPoints = pts.map((p, i) => {
+            const x = pts.length > 1 ? i * step : svgW / 2;
+            const y = svgH - ((p.qty - minVal) / range) * (svgH - 4) - 2;
+            return `${x},${y}`;
+        });
+        const linePath = pathPoints.join(' L ');
+        const areaPath = `M ${pathPoints[0]} L ${linePath} L ${(pts.length-1)*step},${svgH} L 0,${svgH} Z`;
+        const lineColor = diff >= 0 ? 'var(--green-500)' : 'var(--red-500)';
+        const areaColor = diff >= 0 ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)';
+
+        // Date labels
+        const dateLabels = pts.length <= 7 ? pts.map(p => formatDate(p.date).substring(0,5)) :
+            [formatDate(pts[0].date).substring(0,5), '...', formatDate(pts[pts.length-1].date).substring(0,5)];
+
+        return `
+        <div class="timeline-card">
+            <div class="timeline-top">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div class="item-code">${m.codigo}</div>
+                    <div>
+                        <div style="font-size:13px;font-weight:700">${m.nome}</div>
+                        <div style="font-size:11px;color:var(--gray-500)">${m.grupo} · ${m.unidade}</div>
+                    </div>
+                </div>
+                <div style="text-align:right">
+                    <div style="font-size:20px;font-weight:800">${currentQty}</div>
+                    <div class="stock-variation ${diffClass}" style="justify-content:flex-end">
+                        <span class="material-icons-round" style="font-size:14px">${diffIcon}</span>
+                        ${diffText} ${m.unidade}
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-chart">
+                <svg width="100%" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" preserveAspectRatio="none">
+                    <path d="${areaPath}" fill="${areaColor}"/>
+                    <polyline points="${pathPoints.join(' ')}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    ${pts.map((p, i) => {
+                        const x = pts.length > 1 ? i * step : svgW / 2;
+                        const y = svgH - ((p.qty - minVal) / range) * (svgH - 4) - 2;
+                        return `<circle cx="${x}" cy="${y}" r="3" fill="white" stroke="${lineColor}" stroke-width="1.5"/>`;
+                    }).join('')}
+                </svg>
+            </div>
+            <div class="timeline-dates">
+                ${pts.map(p => `<span>${formatDate(p.date).substring(0,5)}</span>`).join('')}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
+
+function maskDate(input) {
+    let v = input.value.replace(/\D/g, '');
+    if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
+    if (v.length > 5) v = v.substring(0,5) + '/' + v.substring(5,9);
+    input.value = v;
+}
+
+function parseDateBR(str) {
+    // DD/MM/AAAA -> AAAA-MM-DD
+    const parts = str.split('/');
+    if (parts.length !== 3 || parts[2].length !== 4) return null;
+    const d = parseInt(parts[0]), m = parseInt(parts[1]), y = parseInt(parts[2]);
+    if (isNaN(d) || isNaN(m) || isNaN(y) || d<1 || d>31 || m<1 || m>12) return null;
+    return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+
+function todayBR() {
+    const t = new Date();
+    return `${String(t.getDate()).padStart(2,'0')}/${String(t.getMonth()+1).padStart(2,'0')}/${t.getFullYear()}`;
+}
+
+function todayISO() {
+    const t = new Date();
+    return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+}
+
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+});
+
+// ============================================================
+// INIT
+// ============================================================
+// Set date input to today
+document.getElementById('inventoryDate').value = todayBR();
+
+populateLoginUsers();
+checkSession();
+
+</script>
+</body>
+</html>

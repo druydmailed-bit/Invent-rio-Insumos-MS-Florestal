@@ -255,6 +255,28 @@
             font-weight: 500;
         }
 
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .sync-badge.online {
+            background: var(--green-50);
+            color: var(--green-700);
+        }
+
+        .sync-badge.local {
+            background: var(--yellow-50);
+            color: #a16207;
+        }
+
         .header-right {
             display: flex;
             align-items: center;
@@ -418,6 +440,18 @@
             font-weight: 500;
         }
 
+        .home-stats {
+            margin-bottom: 16px;
+        }
+
+        .home-stats .stat-card {
+            padding: 14px;
+        }
+
+        .home-stats .stat-value {
+            font-size: 20px;
+        }
+
         /* Inventory Items */
         .inventory-item {
             display: flex;
@@ -451,6 +485,14 @@
         .item-group {
             font-size: 12px;
             color: var(--gray-500);
+        }
+
+        .item-group-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 2px;
         }
 
         .item-qty-input {
@@ -1083,6 +1125,10 @@
             <div>
                 <div class="header-title">Inventário Almox</div>
                 <div class="header-subtitle" id="headerDivision">Divisão Bataguassu</div>
+                <div class="sync-badge online" id="syncStatusBadge">
+                    <span class="material-icons-round" style="font-size:14px">cloud_done</span>
+                    <span id="syncStatusText">Firebase online</span>
+                </div>
             </div>
         </div>
         <div class="header-right">
@@ -1119,6 +1165,8 @@
                     </button>
                 </div>
             </div>
+
+            <div class="stats-grid home-stats" id="inventoryStats"></div>
 
             <!-- Recent counts -->
             <div class="card">
@@ -1265,6 +1313,12 @@
                     <label style="font-size:11px">Até</label>
                     <input type="text" id="dashDateTo" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" style="padding:8px 10px;font-size:13px" oninput="maskDate(this)" onchange="renderDashboard()">
                 </div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;margin-top:8px">
+                <button class="btn btn-ghost btn-sm" onclick="clearDashboardFilters()">
+                    <span class="material-icons-round" style="font-size:16px">filter_alt_off</span>
+                    Limpar filtros
+                </button>
             </div>
         </div>
 
@@ -1581,6 +1635,27 @@ let stockDivisionFilter = 'total';
 let dashDivisionFilter = 'total';
 let dashGroupFilter = 'todos';
 
+function normalizeText(value) {
+    return (value || '')
+        .toString()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
+function matchesSearch(search, ...values) {
+    const query = normalizeText(search);
+    if (!query) return true;
+    return values.some(value => normalizeText(value).includes(query));
+}
+
+function getStockStatus(qty) {
+    if (qty <= 0) return { label: 'Sem estoque', className: 'badge-red' };
+    if (qty <= 5) return { label: 'Estoque baixo', className: 'badge-yellow' };
+    return { label: 'Estoque ok', className: 'badge-green' };
+}
+
 // ============================================================
 // AUTH
 // ============================================================
@@ -1590,12 +1665,14 @@ function populateLoginUsers() {
             people = snap.docs.map(d => ({ id: d.id, ...d.data() }));
             updateLoginSelect();
             renderPeople();
+            renderInventoryStats();
             restoreSavedSession();
         });
     } else {
         people = LocalDB.getAll('people');
         updateLoginSelect();
         renderPeople();
+        renderInventoryStats();
     }
 }
 
@@ -1632,6 +1709,7 @@ function showApp() {
     document.getElementById('userName').textContent = currentUser.nome.split(' ')[0];
     document.getElementById('userAvatar').textContent = currentUser.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
     document.getElementById('headerDivision').textContent = currentUser.divisao;
+    setSyncStatus();
     loadData();
 }
 
@@ -1665,6 +1743,22 @@ function restoreSavedSession() {
     }
 }
 
+function setSyncStatus() {
+    const badge = document.getElementById('syncStatusBadge');
+    const text = document.getElementById('syncStatusText');
+    if (!badge || !text) return;
+
+    if (useFirebase) {
+        badge.classList.remove('local');
+        badge.classList.add('online');
+        text.textContent = 'Firebase online';
+    } else {
+        badge.classList.remove('online');
+        badge.classList.add('local');
+        text.textContent = 'Modo local';
+    }
+}
+
 // ============================================================
 // DATA LOADING
 // ============================================================
@@ -1672,11 +1766,11 @@ function loadData() {
     if (useFirebase) {
         db.collection('materials').orderBy('codigo').onSnapshot(snap => {
             materials = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            renderMaterials(); renderStockList();
+            renderMaterials(); renderStockList(); renderInventoryStats(); renderDashboard();
         });
         db.collection('counts').orderBy('data', 'desc').onSnapshot(snap => {
             counts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            renderRecentCounts(); renderStockList(); renderHistory(); renderRecords(); renderDashboard();
+            renderRecentCounts(); renderStockList(); renderHistory(); renderRecords(); renderInventoryStats(); renderDashboard();
         });
     } else {
         refreshLocalData();
@@ -1688,7 +1782,7 @@ function refreshLocalData() {
     counts = LocalDB.getAll('counts').sort((a,b) => b.data > a.data ? 1 : -1);
     people = LocalDB.getAll('people');
     renderMaterials(); renderStockList(); renderRecentCounts();
-    renderHistory(); renderRecords(); renderDashboard(); renderPeople();
+    renderHistory(); renderRecords(); renderInventoryStats(); renderDashboard(); renderPeople();
     updateLoginSelect();
 }
 
@@ -1784,11 +1878,9 @@ function buildGroupPills() {
 // MATERIALS CRUD
 // ============================================================
 function renderMaterials() {
-    const search = (document.getElementById('searchCadMaterial')?.value || '').toLowerCase();
+    const search = document.getElementById('searchCadMaterial')?.value || '';
     const filtered = materials.filter(m =>
-        m.nome.toLowerCase().includes(search) ||
-        m.codigo.toLowerCase().includes(search) ||
-        m.grupo.toLowerCase().includes(search)
+        matchesSearch(search, m.nome, m.codigo, m.grupo, m.unidade)
     );
     const el = document.getElementById('materialsList');
     if (!filtered.length) {
@@ -1852,12 +1944,14 @@ function editMaterial(id) {
 async function saveMaterial() {
     const id = document.getElementById('editMaterialId').value;
     const data = {
-        codigo: document.getElementById('matCodigo').value.trim(),
+        codigo: document.getElementById('matCodigo').value.trim().toUpperCase(),
         nome: document.getElementById('matNome').value.trim(),
         grupo: document.getElementById('matGrupo').value,
         unidade: document.getElementById('matUnidade').value
     };
     if (!data.codigo || !data.nome || !data.grupo) return showToast('Preencha todos os campos');
+    const duplicate = materials.find(m => normalizeText(m.codigo) === normalizeText(data.codigo) && m.id !== id);
+    if (duplicate) return showToast('Já existe um material com este código');
     try {
         if (useFirebase) {
             if (id) { await db.collection('materials').doc(id).update(data); }
@@ -1935,6 +2029,12 @@ async function savePerson() {
         senha: document.getElementById('pesSenha').value
     };
     if (!data.nome || !data.divisao || !data.senha) return showToast('Preencha todos os campos');
+    const duplicate = people.find(p =>
+        normalizeText(p.nome) === normalizeText(data.nome) &&
+        normalizeText(p.divisao) === normalizeText(data.divisao) &&
+        p.id !== id
+    );
+    if (duplicate) return showToast('Já existe uma pessoa com este nome nesta divisão');
     try {
         if (useFirebase) {
             if (id) { await db.collection('people').doc(id).update(data); }
@@ -1986,10 +2086,9 @@ function startCounting() {
 }
 
 function renderCountingList() {
-    const search = (document.getElementById('searchMaterial')?.value || '').toLowerCase();
+    const search = document.getElementById('searchMaterial')?.value || '';
     const filtered = materials.filter(m =>
-        m.nome.toLowerCase().includes(search) ||
-        m.codigo.toLowerCase().includes(search)
+        matchesSearch(search, m.nome, m.codigo, m.grupo, m.unidade)
     );
     const el = document.getElementById('countingList');
     el.innerHTML = filtered.map(m => `
@@ -2120,6 +2219,32 @@ function sendWhatsApp() {
 // ============================================================
 // RECENT COUNTS
 // ============================================================
+function renderInventoryStats() {
+    const el = document.getElementById('inventoryStats');
+    if (!el) return;
+
+    const lastCountDate = counts.length ? formatDate(counts[0].data) : 'Sem contagens';
+
+    el.innerHTML = `
+        <div class="stat-card">
+            <div class="stat-value">${materials.length}</div>
+            <div class="stat-label">Materiais ativos</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">${people.length}</div>
+            <div class="stat-label">Pessoas cadastradas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">${counts.length}</div>
+            <div class="stat-label">Contagens registradas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="font-size:15px">${lastCountDate}</div>
+            <div class="stat-label">Última contagem</div>
+        </div>
+    `;
+}
+
 function renderRecentCounts() {
     const el = document.getElementById('recentCountsList');
     const recent = counts.slice(0, 5);
@@ -2147,7 +2272,7 @@ function renderRecentCounts() {
 // STOCK & CONSUMPTION
 // ============================================================
 function renderStockList() {
-    const search = (document.getElementById('searchStock')?.value || '').toLowerCase();
+    const search = document.getElementById('searchStock')?.value || '';
     const el = document.getElementById('stockList');
 
     // Filter counts by selected division
@@ -2200,8 +2325,7 @@ function renderStockList() {
         const diff = qty - prevQty;
         return { ...m, qty, diff, prevQty };
     }).filter(m =>
-        m.nome.toLowerCase().includes(search) ||
-        m.codigo.toLowerCase().includes(search)
+        matchesSearch(search, m.nome, m.codigo, m.grupo, m.unidade)
     );
 
     if (!stockItems.length) {
@@ -2215,6 +2339,7 @@ function renderStockList() {
         let variationText = '0';
         if (s.diff > 0) { variationClass = 'variation-up'; variationIcon = 'arrow_upward'; variationText = '+' + s.diff; }
         else if (s.diff < 0) { variationClass = 'variation-down'; variationIcon = 'arrow_downward'; variationText = s.diff; }
+        const stockStatus = getStockStatus(s.qty);
 
         return `
         <div class="stock-item">
@@ -2222,7 +2347,10 @@ function renderStockList() {
                 <div class="item-code">${s.codigo}</div>
                 <div class="stock-left">
                     <div class="stock-name">${s.nome}</div>
-                    <div class="stock-meta">${s.grupo}</div>
+                    <div class="item-group-row">
+                        <div class="stock-meta">${s.grupo}</div>
+                        <span class="badge ${stockStatus.className}">${stockStatus.label}</span>
+                    </div>
                 </div>
             </div>
             <div class="stock-qty">
@@ -2463,6 +2591,17 @@ function getDashFilteredMaterials() {
     return materials.filter(m => m.grupo === dashGroupFilter);
 }
 
+function clearDashboardFilters() {
+    document.getElementById('dashDateFrom').value = '';
+    document.getElementById('dashDateTo').value = '';
+    dashDivisionFilter = 'total';
+    dashGroupFilter = 'todos';
+    document.querySelectorAll('#dashDivisionFilter .pill').forEach((pill, index) => {
+        pill.classList.toggle('active', index === 0);
+    });
+    renderDashboard();
+}
+
 function renderDashboard() {
     buildGroupPills();
     const fc = getDashFilteredCounts();
@@ -2626,7 +2765,7 @@ function renderDivisionStats(fc) {
 // ============================================================
 function renderTimeline() {
     const el = document.getElementById('timelineContainer');
-    const search = (document.getElementById('searchTimeline')?.value || '').toLowerCase();
+    const search = document.getElementById('searchTimeline')?.value || '';
     const dates = [...new Set(counts.map(c => c.data))].sort();
 
     if (dates.length < 1) {
@@ -2636,7 +2775,7 @@ function renderTimeline() {
 
     // Build data: for each material, get qty per date
     const matData = materials
-        .filter(m => m.nome.toLowerCase().includes(search) || m.codigo.toLowerCase().includes(search))
+        .filter(m => matchesSearch(search, m.nome, m.codigo, m.grupo, m.unidade))
         .map(m => {
             const points = dates.map(d => {
                 let qty = null;
@@ -2789,6 +2928,15 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 // ============================================================
 // Set date input to today
 document.getElementById('inventoryDate').value = todayBR();
+setSyncStatus();
+
+document.getElementById('loginPassword').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') doLogin();
+});
+
+document.getElementById('loginUser').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') doLogin();
+});
 
 populateLoginUsers();
 checkSession();

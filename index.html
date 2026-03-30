@@ -1657,8 +1657,39 @@ function getStockStatus(qty) {
     return { label: 'Estoque ok', className: 'badge-green' };
 }
 
+function repairLegacyText(value) {
+    let text = (value || '').toString();
+    const replacements = [
+        [/Divis\?o/g, 'Divisão'],
+        [/\?gua/g, 'Água'],
+        [/\?leo/g, 'Óleo'],
+        [/\?culos/g, 'Óculos'],
+        [/Prote\?\?o/g, 'Proteção'],
+        [/Seguran\?a/g, 'Segurança'],
+        [/Combust\?vel/g, 'Combustível'],
+        [/Escrit\?rio/g, 'Escritório'],
+        [/Esferogr\?fica/g, 'Esferográfica'],
+        [/Sanit\?ria/g, 'Sanitária'],
+        [/Jo\?o/g, 'João'],
+        [/Gal\?o/g, 'Galão'],
+        [/El\?trica/g, 'Elétrica'],
+        [/Hidr\?ulica/g, 'Hidráulica'],
+        [/Retifica\?\?o/g, 'Retificação'],
+        [/Evolu\?\?o/g, 'Evolução'],
+        [/Hist\?rico/g, 'Histórico'],
+        [/Per\?odo/g, 'Período'],
+        [/N\?o/g, 'Não']
+    ];
+
+    replacements.forEach(([pattern, replacement]) => {
+        text = text.replace(pattern, replacement);
+    });
+
+    return text;
+}
+
 function cleanText(value) {
-    return (value || '').toString().replace(/\s+/g, ' ').trim();
+    return repairLegacyText(value).replace(/\s+/g, ' ').trim();
 }
 
 function formatMaterialCodeValue(value) {
